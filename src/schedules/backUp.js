@@ -5,9 +5,7 @@ const backup = require('mongodb-backup');
 const { MongoClient } = require("mongodb");
 const fs = require('fs');
 const { backupConfigModel } = require('../database/schemas/backupConfigSchema');
-
-
-const idConfig = new mongoose.Types.ObjectId('648e4b2d3b2ce31d5c9c5d0f') 
+const { configServerModel } = require('../config/configServer');
 
 
 const backupFunction = async () => {
@@ -32,13 +30,12 @@ const backupFunction = async () => {
 
 const backupTask = async () => {
 
-  const idConfig = new mongoose.Types.ObjectId('648e4b2d3b2ce31d5c9c5d0f') 
-  const dataConfig = await backupConfigModel.findOne({_id:idConfig});
+  const dataConfig = await configServerModel.findOne({});
     
   let rule = new schedule.RecurrenceRule();
-  rule.second = dataConfig.interval;
+  rule.second = dataConfig.intervalBackups;
 
-  if(dataConfig.status){
+  if(dataConfig.statusBackups){
     schedule.scheduleJob('myBackUpTask',rule, backupFunction)
     console.log('servicio de copia de respaldo habilitado');
   }else{
@@ -49,11 +46,11 @@ const backupTask = async () => {
 
 const updatebackupService = async() => {
   console.log('reconfigurando tarea');
-  const configUpdate = await backupConfigModel.findOne({_id:idConfig});
+  const configUpdate = await configServerModel.findOne({});
   let rule = new schedule.RecurrenceRule();
-  rule.second = configUpdate.interval;
+  rule.second = configUpdate.intervalBackups;
 
-  if(configUpdate.status){
+  if(configUpdate.statusBackups){
     if(schedule.scheduledJobs['myBackUpTask']){
       const tarea = schedule.scheduledJobs['myBackUpTask'];
       tarea.reschedule(rule);

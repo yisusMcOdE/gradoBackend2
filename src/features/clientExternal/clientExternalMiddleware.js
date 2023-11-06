@@ -8,7 +8,7 @@ const getAllClientExternal = async(req, res, next) => {
     req.binnacleId = await addBinnacle(req);
 
     let data = await clientExternalModel.find({});
-    if(data!==null){
+    if(data.length!==0){
         res.status(StatusCodes.OK).send(JSON.stringify(data));
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
 

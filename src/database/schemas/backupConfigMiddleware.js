@@ -6,13 +6,11 @@ const path = require('path');
 const { addBinnacle } = require("../../features/binnacle/binnacleMiddleware");
 const { binnacleModel } = require("../../features/binnacle/binnacleSchema");
 const { StatusCodes, ReasonPhrases } = require("http-status-codes");
+const { configServerModel } = require("../../config/configServer");
 
-
-
-const idConfig = new mongoose.Types.ObjectId('648e4b2d3b2ce31d5c9c5d0f') 
 
 const getbackupConfig = async (req, res, next) => {
-    let data = await backupConfigModel.findOne({_id:idConfig});
+    let data = await configServerModel.findOne({});
     res.status(200).send(data);
 }
 
@@ -58,7 +56,7 @@ const backupList = async (req, res, next) => {
 const updateConfig = async (req, res, next) => {
     req.binnacleId = await addBinnacle(req);
     try {
-        let response = await backupConfigModel.findOneAndUpdate({_id:idConfig},req.body);
+        let response = await configServerModel.findOneAndUpdate({},req.body);
         if(response!==null){
             updatebackupService();
             const updates = {};

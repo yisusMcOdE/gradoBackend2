@@ -8,18 +8,17 @@ const { userModel } = require("./usersSchema");
 
 const getAllUsers = async (req, res,next)=> {
 
-    req.binnacleId = await addBinnacle(req);
+    req.binnacleId = await addBinnacle(req, req.headers.authorization);
 
     const data = await userModel.find({},'user');
 
 
-    if(data!==[]){
+    if(data.length!==0){
         res.status(StatusCodes.OK).send(JSON.stringify(data));
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
     }else{
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
-
     }
 }
 
@@ -100,6 +99,24 @@ const getUserById = async (req, res, next) => {
     }
 }
 
+const addUser = async (req, res) => {
+    req.binnacleId = await addBinnacle(req, true);
+    try {
+        const response = await userModel.create({
+            user: req.body.user,
+            password : req.body.password,
+            role : 'SuperUsuario'
+        });
+        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
+        res.status(StatusCodes.CREATED).send({message:ReasonPhrases.CREATED});
+
+    } catch (error) {
+        console.log(error);
+        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
+        res.status(StatusCodes.NOT_IMPLEMENTED).send({message: ReasonPhrases.NOT_IMPLEMENTED});
+    }
+}
+
 const updateUser = async (req, res) => {
 
     req.binnacleId = await addBinnacle(req);
@@ -128,4 +145,4 @@ const updateUser = async (req, res) => {
     }
 }
 
-module.exports = {getAllUsers, getAllUsersComplete, getUserById, updateUser}
+module.exports = {getAllUsers, getAllUsersComplete, getUserById, updateUser, addUser}

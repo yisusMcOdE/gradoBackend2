@@ -1,6 +1,6 @@
 const express = require ('express');
 const { mongoose } = require ('../../database/connection.js');
-const { getAllUsers, getAllUsersComplete, getUserById, updateUser } = require('./usersMiddleware.js');
+const { getAllUsers, getAllUsersComplete, getUserById, updateUser, addUser } = require('./usersMiddleware.js');
 
 
 const usersRoute = express.Router();
@@ -14,5 +14,6 @@ usersRoute.get('', getAllUsers);
 usersRoute.get('/complete', getAllUsersComplete);
 usersRoute.get('/:id', getUserById);
 usersRoute.put('/:id', updateUser);
+usersRoute.post('', addUser);
 
 module.exports = {usersRoute}

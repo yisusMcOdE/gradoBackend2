@@ -3,7 +3,8 @@ const { generateEmail } = require('../mail');
 const { configServerModel } = require('./configServer');
 
 (async()=>{
-    const {emailNotification,passEmailAplication} = await configServerModel.findOne({},'emailNotification passEmailAplication');
+    const {emailNotification,passEmailAplication}=( await configServerModel.findOne({},'emailNotification passEmailAplication')) || {emailNotification:'',passEmailAplication:''};
+
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,

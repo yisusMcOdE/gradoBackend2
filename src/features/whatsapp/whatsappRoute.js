@@ -1,5 +1,6 @@
 const express = require('express');
 const { Client, NoAuth, LocalAuth } = require('whatsapp-web.js');
+const { configServerModel } = require('../../config/configServer');
 
 let notifications = true;
 let isWhatsappAuthenticated = false;
@@ -76,8 +77,10 @@ const getQrClientAuto = async (req, res , next) => {
 
 const getStatusClientWhatsapp = async(req, res, next) => {
     try {
-        if(isWhatsappAuthenticated === true)
-            res.send(JSON.stringify({whatsapp:true, notifications, wid:myClient.info.wid.user, platform: myClient.info.platform}));
+        if(isWhatsappAuthenticated === true){
+            const {statusWWebNotifications} = await configServerModel.findOne({});
+            res.send(JSON.stringify({whatsapp:true, notifications:statusWWebNotifications, wid:myClient.info.wid.user, platform: myClient.info.platform}));
+        }
         else
             res.send(JSON.stringify({whatsapp:false}));
     } catch (error) {
@@ -97,7 +100,8 @@ const getIsReady = async (req,res,next) => {
             })
         })
         ///sendMessage();
-        res.send(JSON.stringify({whatsapp:true, notifications, wid:myClient.info.wid.user, platform: myClient.info.platform}));
+        const {statusWWebNotifications} = await configServerModel.findOne({});
+        res.send(JSON.stringify({whatsapp:true, notifications:statusWWebNotifications, wid:myClient.info.wid.user, platform: myClient.info.platform}));
     } catch (error) {
         console.log(error)
     }
@@ -118,7 +122,7 @@ const logoutSession = async (req, res, next) => {
 
 const updateNotifications = async (req,res,next) => {
     try {
-        notifications = req.body.notifications;
+        await configServerModel.findOneAndUpdate({},{statusWWebNotifications:req.body.notifications});
         res.send({})
     } catch (error) {
         console.log(error)

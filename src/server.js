@@ -1,4 +1,6 @@
-const express = require ('express');
+console.log('HHHHHHHHHHEEEEEEEEEEEERRR RRRRRRRRRREEEEEEEEEEEEEEe');
+
+const express = require('express');
 const bodyParser = require('body-parser');
 const { employeeRoute } = require ('./features/employee/employeeRoute.js');
 const { clientInternalRoute } = require('./features/clientInternal/clientInternalRoute.js');
@@ -24,68 +26,69 @@ const { usersRoute } = require('./features/users/usersRoute.js');
 const {whatsappRoute} = require('./features/whatsapp/whatsappRoute.js');
 const { Client } = require('whatsapp-web.js');
 const { emailRoute } = require('./features/email/emailRoute.js');
-const { configServer } = require('./config/configServer.js');
-
-
-
-
+const { configServer, configServerModel } = require('./config/configServer.js');
 
 const app = express();
 
-app.listen(3000,()=>{console.log("servidor corriendo en el puerto 3000")});
+configServer().then(()=>{
+    app.listen(3000, async()=>{
+        console.log("Servidor corriendo en el puerto 3000");
+    });
 
+    app.use(async(req,res,next)=>{
+        res.set("Access-Control-AlloW-Origin","*");
+        res.set("Access-Control-AlloW-Headers","*");
+        res.set("Access-Control-AlloW-Methods","*");
+        
+        next()
+    })
+    
+    ///Control de token
+    
+    app.use((req, res, next)=>{
+        req.originalUrl=req.path;
+        ///console.log(req.headers.authorization);
+        res.set ({'Content-type':'application/json'});
+        next()
+    })
+    
+    
+    
+    
+    /// Registro para bitácora
+    
+    app.use(bodyParser.json());
+    
+    
+    app.use('/api/material', materialRoute);
+    app.use('/api/employee', employeeRoute);
+    app.use('/api/clientInternal', clientInternalRoute);
+    app.use('/api/clientExternal', clientExternalRoute);
+    app.use('/api/users', usersRoute);
+    app.use('/api/job', jobRoute);
+    app.use('/api/login', loginRoute);
+    app.use('/api/orderExternal', orderExternalRoute);
+    app.use('/api/orderInternal', orderInternalRoute);
+    app.use('/api/step', stepRoute);
+    app.use('/api/configBackup', backUpConfigRoute);
+    app.use('/api/schedule', scheduledRoute);
+    app.use('/api/clients', clientsRoute);
+    app.use('/api/orders', ordersRoute);
+    app.use('/api/orderDetails', orderDetailsRoute);
+    app.use('/api/binnacle', binnacleRoute);
+    app.use('/api/equipment', equipmentRoute);
+    app.use('/api/reports', reportRoute);
+    app.use('/api/whatsapp', whatsappRoute);
+    app.use('/api/email', emailRoute);
+    
+    app.get('/pdf', generatePdf);
+    
+    backupTask();
+    
 
- 
+}).catch((error) => {
+    console.error('Error en la configuración inicial:', error);
+  });
 
-
-app.use((req,res,next)=>{
-    res.set("Access-Control-AlloW-Origin","*");
-    res.set("Access-Control-AlloW-Headers","*");
-    res.set("Access-Control-AlloW-Methods","*");
-    next();
-})
-
-///Control de token
-
-app.use((req, res, next)=>{
-    req.originalUrl=req.path;
-    ///console.log(req.headers.authorization);
-    res.set ({'Content-type':'application/json'});
-    next()
-})
-
-
-
-
-/// Registro para bitácora
-
-app.use(bodyParser.json());
-
-
-app.use('/api/material', materialRoute);
-app.use('/api/employee', employeeRoute);
-app.use('/api/clientInternal', clientInternalRoute);
-app.use('/api/clientExternal', clientExternalRoute);
-app.use('/api/users', usersRoute);
-app.use('/api/job', jobRoute);
-app.use('/api/login', loginRoute);
-app.use('/api/orderExternal', orderExternalRoute);
-app.use('/api/orderInternal', orderInternalRoute);
-app.use('/api/step', stepRoute);
-app.use('/api/configBackup', backUpConfigRoute);
-app.use('/api/schedule', scheduledRoute);
-app.use('/api/clients', clientsRoute);
-app.use('/api/orders', ordersRoute);
-app.use('/api/orderDetails', orderDetailsRoute);
-app.use('/api/binnacle', binnacleRoute);
-app.use('/api/equipment', equipmentRoute);
-app.use('/api/reports', reportRoute);
-app.use('/api/whatsapp', whatsappRoute);
-app.use('/api/email', emailRoute);
-
-app.get('/pdf', generatePdf);
-
-backupTask();
-configServer();
 
 module.exports={}

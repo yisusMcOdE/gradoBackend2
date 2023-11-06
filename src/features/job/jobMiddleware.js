@@ -10,7 +10,7 @@ const getAllJob = async (req,res,next) => {
     req.binnacleId = await addBinnacle(req);
 
     const data = await jobModel.find({},);
-    if(data!==null){
+    if(data.length!==0){
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(data));
     }else{

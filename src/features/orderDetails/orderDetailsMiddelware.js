@@ -66,7 +66,7 @@ const getAllOrderDetailsConfirmed = async (req,res,next) => {
 
     const promiseResponse = await Promise.all(promises);
 
-    if(promiseResponse!==null){
+    if(promiseResponse.length!==0){
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(promiseResponse));
     }else{
