@@ -1,5 +1,3 @@
-console.log('HHHHHHHHHHEEEEEEEEEEEERRR RRRRRRRRRREEEEEEEEEEEEEEe');
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const { employeeRoute } = require ('./features/employee/employeeRoute.js');

@@ -8,9 +8,7 @@ const getQrClient = async(req,res,next)=> {
         })
     })
     res.send(JSON.stringify(qr));
-
-    console.log(await myClient.getState());
-    
+   
 }
 
 const getStatusClientWhatsapp = async(req, res, next) => {

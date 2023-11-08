@@ -100,7 +100,6 @@ const getAllOdersListById = async (req,res,next) => {
         responseInternal = responseInternal.map(item=>{
             item.details = item.details.reduce(
                 (accum, current, currentIndex, details)=>{
-                    console.log(current);
                     if(currentIndex === details.length-1)
                         return accum + `${current.job} (${current.requiredQuantity}).`
                     else
@@ -334,7 +333,6 @@ const confirmOrder = async (req, res ,next) => {
                                                                     `${alertMaterial[itemOrderJobs.job]}, ${itemMaterialJob.name}` : 
                                                                     itemMaterialJob.name;
                         conflict=true
-                        console.log('existe conflicto')
                     }else{
                         updatesMaterial.push({
                             materialId:material._id,
@@ -346,7 +344,6 @@ const confirmOrder = async (req, res ,next) => {
 
                 ///Si no existe un conflicto con los valores del material realizamos las actualizaciones necesarias
                 if(!conflict){
-                    console.log(`no conflict con ${itemOrderJobs.job}`);
                     for (let iterator of updatesMaterial) {
                         await materialModel.findOneAndUpdate(
                             {
@@ -361,16 +358,13 @@ const confirmOrder = async (req, res ,next) => {
                             }
                         )
                     }
-                    console.log('termina actualizacion de material')
                     /// Cambiamos los días ya especificados de la orden para cada trabajo
 
                     const seconds = Number((req.body.details.find(item=>{ return item._id === itemOrderJobs._id.toString()}))?.seconds);
                     
                     await orderDetailsModel.findOneAndUpdate({_id:itemOrderJobs._id},{seconds:(seconds * 86400), confirmed:true})
-                    console.log('termina actualizacion de segundos del trabajo')
                     ///Damos next step a cada orden
                     await nextStep(itemOrderJobs._id);
-                    console.log('termina nextstep')
                 }
             }
 
@@ -505,7 +499,6 @@ const finishOrderById = async (req, res, next) => {
                 order = await orderInternalModel.findOne({_id:response.idOrder});
             const details = await orderDetailsModel.find({idOrder:order._id});
             if(details.findIndex(item=>{return item.finished===false})===-1){
-                console.log('order Finalizada');
                 let nameClient;
                 let number;
                 let detailsFormat = [];
@@ -520,9 +513,9 @@ const finishOrderById = async (req, res, next) => {
                 details.map((item) => {
                     detailsFormat.push(`${item.deliveredQuantity} Unid${item.deliveredQuantity>1?'s.':'.'} de ${item.job}.`)
                 })
-
-                sendMessage(`591${number.phone}@c.us`, nameClient, detailsFormat);
                 sendEmail('Señor', order.client, detailsFormat, number.email);
+                ///sendMessage(`591${number.phone}@c.us`, nameClient, detailsFormat);
+                
                 
             }else{
                 console.log('aun falta');
@@ -558,7 +551,6 @@ const cancelOrder = async(req, res, next) => {
             let statusOrders = await orderDetailsModel.find({idOrder : req._id},'status');
             statusOrders = statusOrders.map(item=>{return item.status});
             if(!statusOrders.includes(true)){
-                console.log('debera cancelarse')
                 await orderExternalModel.findOneAndUpdate({_id : req._id},{status:false});
                 await orderInternalModel.findOneAndUpdate({_id : req._id},{status:false});
             }

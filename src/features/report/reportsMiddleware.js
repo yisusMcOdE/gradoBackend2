@@ -73,10 +73,6 @@ const getAreaReport = async (req,res,next) => {
             const filterEnd = new Date(req.query.end);
             const itemDate = new Date(item.steps.find(item => item.type==='finished').startedAt.toISOString().slice(0,10));
 
-            console.log(filterStart);
-            console.log(filterEnd);
-            console.log(itemDate);
-
             return ((itemDate >= filterStart)&&(itemDate <= filterEnd))
         })
     }

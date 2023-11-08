@@ -28,7 +28,7 @@ const { configServerModel } = require('./configServer');
 
 const sendEmail = async (title, name, details, email) => {
 
-    const {statusEmailNotifications} = await configServerModel.find({},'statusEmailNotifications');
+    const {statusEmailNotifications, emailNotification, passEmailAplication} = await configServerModel.findOne({},'statusEmailNotifications emailNotification passEmailAplication');
 
     if(statusEmailNotifications){
         const transporter = nodemailer.createTransport({
@@ -42,6 +42,7 @@ const sendEmail = async (title, name, details, email) => {
         });
 
         const htmlTemplate = generateEmail('Señor', name, details);
+         console.log('se envia');
         const response = await transporter.sendMail({
             from: 'Imprenta Universitaria <uatfImprenta@gmail.com>', // sender address
             to: email, // list of receivers

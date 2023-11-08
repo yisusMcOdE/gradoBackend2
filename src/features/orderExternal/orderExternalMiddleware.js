@@ -159,7 +159,7 @@ const addOrderExternal = async (req,res,next) => {
             await nextStep(item._id);
         }
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
-        res.status(StatusCodes.CREATED).send({message:ReasonPhrases.CREATED, alert:alertMaterial});
+        res.status(StatusCodes.CREATED).send({message:ReasonPhrases.CREATED, alert:alertMaterial, data:responseOrder});
 
     } catch (error){
         if(responseOrder){

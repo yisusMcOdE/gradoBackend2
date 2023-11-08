@@ -23,7 +23,6 @@ myClient.on('ready',async()=>{
 myClient.on('disconnected',(reason)=>{
     console.log('desconectado');
     maxQrError = true
-    console.log(reason);
     isWhatsappAuthenticated = false;
 })
 
@@ -135,8 +134,7 @@ const sendMessage = async (number, nameClient, details) => {
         detailsFormat += `${item}\n`
     })
     const msg=`${nameClient}. \n Le informamos que su pedido esta listo para que usted pase a recepcionarlo en oficinas de la imprenta universitaria.\n *Detalle de pedido:*\n ${detailsFormat}`;
-    console.log(number,'number')
-    if(notifications===true){
+    if(true){
         myClient.sendMessage(number, msg)
         .then(() => {
             console.log('Mensaje enviado con éxito');

@@ -28,7 +28,8 @@ const schema = {
     status: {type: Boolean, default:true},
     statusDelivered : {type: Boolean, default:false},
     numberCheck : {type: Number, default: 0},
-    numberTicketPay : Number
+    numberTicketPay: { type : Number, unique : true },
+
 }
 
 const orderExternalSchema = new mongoose.Schema(schema,{timestamps:true, versionKey:false});

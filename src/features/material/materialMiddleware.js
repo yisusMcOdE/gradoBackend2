@@ -195,16 +195,11 @@ const getMaterialExtract = async(req, res, next) => {
 
     if(req.query.start!==undefined && req.query.end!==undefined)
     {
-        console.log(req.query.start);
-            console.log(req.query.end);
         stract = stract.filter(item => {
             const filterStart = new Date(req.query.start);
             const filterEnd = new Date(req.query.end);
             const itemDate = new Date(item.date);
 
-            console.log(filterStart);
-            console.log(filterEnd);
-            console.log(itemDate);
 
             return ((itemDate >= filterStart)&&(itemDate <= filterEnd))
         })
