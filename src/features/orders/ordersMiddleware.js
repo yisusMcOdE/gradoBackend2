@@ -95,7 +95,7 @@ const getAllOdersListById = async (req,res,next) => {
             }
         }
     ])
-    if(responseInternal!==null){
+    if(responseInternal.length!==0){
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         responseInternal = responseInternal.map(item=>{
             item.details = item.details.reduce(

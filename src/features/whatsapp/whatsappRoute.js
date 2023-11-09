@@ -2,42 +2,43 @@ const express = require('express');
 const { Client, NoAuth, LocalAuth } = require('whatsapp-web.js');
 const { configServerModel } = require('../../config/configServer');
 
-let notifications = true;
-let isWhatsappAuthenticated = false;
-let maxQrError = false;
+try {
+    let isWhatsappAuthenticated = false;
+    let maxQrError = false;
 
-const myClient = new Client({
-    authStrategy: new NoAuth(),
-    puppeteer: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    },
-    qrMaxRetries:2
-});
+    var myClient = new Client({
+        authStrategy: new NoAuth(),
+        puppeteer: {
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        },
+        qrMaxRetries:2
+    });
 
-myClient.on('ready',async()=>{
-    console.log('Cliente listo desde home');
-    maxQrError = false;
-    isWhatsappAuthenticated = true;
-})
+    myClient.on('ready',async()=>{
+        console.log('Cliente listo desde home');
+        maxQrError = false;
+        isWhatsappAuthenticated = true;
+    })
 
-myClient.on('disconnected',(reason)=>{
-    console.log('desconectado');
-    maxQrError = true
-    isWhatsappAuthenticated = false;
-})
+    myClient.on('disconnected',(reason)=>{
+        console.log('desconectado');
+        maxQrError = true
+        isWhatsappAuthenticated = false;
+    })
 
-myClient.on('qr', (qr) => {
-        console.log(qr);
-})
+    myClient.on('qr', (qr) => {
+            console.log(qr);
+    })
 
-myClient.on('auth_failure',(msg)=>{
-    console.log('auth_fail')
-    console.log(msg);
-})
+    myClient.on('auth_failure',(msg)=>{
+        console.log('auth_fail')
+        console.log(msg);
+    })
 
-myClient.initialize();
-
-
+    myClient.initialize();
+} catch (error) {
+    console.log(error);
+}
 
 const getQrClient = async(req,res,next)=> {
     try {
@@ -89,7 +90,6 @@ const getStatusClientWhatsapp = async(req, res, next) => {
 }
 
 const getIsReady = async (req,res,next) => {
-
     try {
         await new Promise((resolve, reject)=>{
             myClient.once('ready',()=>{

@@ -205,7 +205,7 @@ const getMaterialExtract = async(req, res, next) => {
         })
     }
 
-    if(stract!==[]){
+    if(stract.length!==0){
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(stract));
     }else{

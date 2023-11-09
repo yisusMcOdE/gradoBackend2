@@ -3,27 +3,30 @@ const { generateEmail } = require('../mail');
 const { configServerModel } = require('./configServer');
 
 (async()=>{
-    const {emailNotification,passEmailAplication}=( await configServerModel.findOne({},'emailNotification passEmailAplication')) || {emailNotification:'',passEmailAplication:''};
+    try {
+        const {emailNotification,passEmailAplication}=( await configServerModel.findOne({},'emailNotification passEmailAplication')) || {emailNotification:'',passEmailAplication:''};
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+            user: emailNotification,
+            pass: passEmailAplication,
+            },
+        });
+        
+        transporter.verify().then(async()=>{
+            console.log('Servicio email listo');
+            await configServerModel.findOneAndUpdate({},{statusEmailNotifications:true});
+        }).catch(async(err)=>{
+            console.log('Servicio email inahbilitado');
+            await configServerModel.findOneAndUpdate({},{statusEmailNotifications:false});
+        })
 
-    const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: emailNotification,
-          pass: passEmailAplication,
-        },
-    });
-    
-    transporter.verify().then(async()=>{
-        console.log('Servicio email listo');
-        await configServerModel.findOneAndUpdate({},{statusEmailNotifications:true});
-    }).catch(async(err)=>{
-        console.log('Servicio email inahbilitado');
-        await configServerModel.findOneAndUpdate({},{statusEmailNotifications:false});
-    })
-
-    transporter.close()
+        transporter.close()   
+    } catch (error) {
+        console.log(error)
+    }
 })();
 
 const sendEmail = async (title, name, details, email) => {

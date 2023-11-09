@@ -48,7 +48,7 @@ const getAllOrderMaterials = async(req, res, next) => {
             }
         }
     ]);
-    if(response!==null){
+    if(response.length!==0){
         response = response.map(item=>{
             let detailsFormated = ''
             item.details.map((itemDetail,index)=>{
@@ -176,21 +176,26 @@ const confirmOrderMaterial = async (req, res, next) => {
 
         if(req.body.complete){
             await orderMaterialDetailModel.find({idOrderMaterial:req._id}).then(doc=>{
-                doc.forEach(async(item)=>{
-                    item.deliveredQuantity = item.requiredQuantity;
-                    await item.save();
-
-                    const response = await materialModel.findOneAndUpdate(
-                    {
-                        _id : item.idMaterial
-                    },
-                    {
-                        $inc:{available: item.requiredQuantity}
-                    });
-                })
+                try {
+                    doc.forEach(async(item)=>{
+                        item.deliveredQuantity = item.requiredQuantity;
+                        await item.save();
+    
+                        const response = await materialModel.findOneAndUpdate(
+                        {
+                            _id : item.idMaterial
+                        },
+                        {
+                            $inc:{available: item.requiredQuantity}
+                        });
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
             })
         }else{
             req.body.details.map(async(item)=>{
+                
                 let response = await orderMaterialDetailModel.findOneAndUpdate(
                     {
                         _id : item._id,

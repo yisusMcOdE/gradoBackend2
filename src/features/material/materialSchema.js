@@ -14,14 +14,18 @@ const schema = {
 const materialSchema = new mongoose.Schema(schema,{timestamps:true, versionKey:false});
 
 materialSchema.post('findOneAndUpdate',async(doc)=>{
-    const response = await materialModel.find(
-        {
-            _id:doc._id
-        }
-    );
-    const total = Number(response[0].available + response[0].reserved + response[0].used).toFixed(2);
-
-    await materialModel.updateOne({_id:doc._id},{total:total});
+    try {
+        const response = await materialModel.find(
+            {
+                _id:doc._id
+            }
+        );
+        const total = Number(response[0].available + response[0].reserved + response[0].used).toFixed(2);
+    
+        await materialModel.updateOne({_id:doc._id},{total:total});   
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 const materialModel = mongoose.model('material', materialSchema);

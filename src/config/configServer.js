@@ -10,11 +10,15 @@ const schemaConfig = new mongoose.Schema({
 }, {timestamps:true, versionKey:false});
 
 schemaConfig.pre('save', async(next)=>{
-    const count = await configServerModel.countDocuments();
-    if(count > 1){
-        next(new Error('Ya existe configuraciones'))}
-    else
-        next()
+    try {
+        const count = await configServerModel.countDocuments();
+        if(count > 1){
+            next(new Error('Ya existe configuraciones'))}
+        else
+            next()
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 const configServerModel = mongoose.model('configServer', schemaConfig);

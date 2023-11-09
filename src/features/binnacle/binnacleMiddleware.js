@@ -5,9 +5,9 @@ const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 const addBinnacle = async (req, isLogin=false) => {
     let user = ''
     if(!isLogin){
-        const token = req.headers.authorization.slice(7);
+        const token = req.headers?.authorization?.slice(7);
         const decodedToken = jwt.decode(token);
-        user = decodedToken.data.user;
+        user = decodedToken?.data?.user;
     }
     
 
@@ -50,7 +50,7 @@ const getAllBinnacle = async (req,res,next) => {
         data = await binnacleModel.find({});
     }
 
-    if(data!==null){
+    if(data.length!==0){
         if(req.query.start!=='' && req.query.end!==''){
             data = data.filter(item => {
                 const filterStart = new Date(req.query.start);

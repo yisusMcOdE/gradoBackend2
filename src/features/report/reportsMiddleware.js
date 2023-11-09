@@ -108,7 +108,7 @@ const getAreaReport = async (req,res,next) => {
             precio
         }
     })
-    if(report!==null){
+    if(report.length!==0){
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(report));
     }else{
@@ -206,7 +206,7 @@ const getOrdersTotalFinished = async (req, res, next) => {
         }
     });
 
-    if(finishReport!==null){
+    if(finishReport.length!==0){
         await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(finishReport));
     }else{

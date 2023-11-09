@@ -20,43 +20,6 @@ const schema = {
 
 const orderDetailsSchema = new mongoose.Schema(schema,{timestamps:true, versionKey:false});
 
-orderDetailsSchema.post('save',async(doc)=>{
-
-    /*
-
-    const requiredQuantity = doc.requiredQuantity;
-
-    const job = await jobModel.findOne({_id:doc.idJob});
-
-    for (let index = 0; index < job.materials.length; index++) {
-        const item = job.materials[index];
-        const idMaterial = item.idMaterial;
-
-        const reserved = Number((requiredQuantity * item.required) / item.produced).toFixed(2);
-        const available = Number(((requiredQuantity * item.required) / item.produced)).toFixed(2);
-
-        const material = await materialModel.findOne({_id : idMaterial});
-
-        const newReserved = Number(material.reserved + Number(reserved)).toFixed(2);
-        const newAvailable = Number(material.available - Number(available)).toFixed(2);
-
-        const response = await materialModel.findOneAndUpdate(
-            {
-                _id: idMaterial
-            },
-            {
-                reserved: newReserved,
-                available: newAvailable
-            },
-            {
-                new:true
-            }
-        )
-    }
-    */
-
-})
-
 const orderDetailsModel = mongoose.model('orderDetail', orderDetailsSchema);
 
 module.exports = {orderDetailsModel};
