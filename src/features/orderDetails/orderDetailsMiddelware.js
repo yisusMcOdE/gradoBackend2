@@ -67,10 +67,12 @@ const getAllOrderDetailsConfirmed = async (req,res,next) => {
     const promiseResponse = await Promise.all(promises);
 
     if(promiseResponse.length!==0){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(promiseResponse));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 
@@ -114,10 +116,12 @@ const getOrdersDelayed = async(req,res,nex) => {
     })
     response = response.map(item => {return {id:item._id}})
     if(response!==null){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(response));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 }

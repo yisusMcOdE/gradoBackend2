@@ -15,10 +15,12 @@ const getAllUsers = async (req, res,next)=> {
 
     if(data.length!==0){
         res.status(StatusCodes.OK).send(JSON.stringify(data));
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
     }else{
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
     }
 }
 
@@ -79,10 +81,12 @@ const getAllUsersComplete = async (req, res,next)=> {
 
     if( dataInstitution.length!==0 || dataEmployee.length!==0 ){
         res.status(StatusCodes.OK).send(JSON.stringify(data));
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
     }else{
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
     }
 }
 
@@ -91,10 +95,12 @@ const getUserById = async (req, res, next) => {
 
     const data = await userModel.findOne({_id:req._id});
     if(data!==null){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(data));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 }
@@ -107,12 +113,14 @@ const addUser = async (req, res) => {
             password : req.body.password,
             role : 'SuperUsuario'
         });
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
         res.status(StatusCodes.CREATED).send({message:ReasonPhrases.CREATED});
 
     } catch (error) {
         console.log(error);
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
         res.status(StatusCodes.NOT_IMPLEMENTED).send({message: ReasonPhrases.NOT_IMPLEMENTED});
     }
 }
@@ -128,18 +136,22 @@ const updateUser = async (req, res) => {
             for (const key in req.body) {
                 updates[key] = response[key]
             }
+            if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.ACCEPTED, oldValues: JSON.stringify(updates)});
             res.status(StatusCodes.ACCEPTED).send();
         }
         else{
+            if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_FOUND});
             res.status(StatusCodes.NOT_FOUND).send();
         }
     }catch (error){
         if(error.code===11000){
+            if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CONFLICT});
             res.status(StatusCodes.CONFLICT).send();
         }else{
+            if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_MODIFIED});
             res.status(StatusCodes.NOT_MODIFIED).send();}
     }

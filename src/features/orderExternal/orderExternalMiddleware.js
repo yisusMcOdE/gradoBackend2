@@ -50,10 +50,12 @@ const getAllOrderExternal = async(req, res, next) => {
           }
     ]);
     if(response!==null){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(response));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 }
@@ -63,10 +65,12 @@ const getOrderExternalList = async(req,res,next) => {
 
     const response = await orderExternalModel.find({});
     if(response!==null){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(response));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 }
@@ -158,7 +162,8 @@ const addOrderExternal = async (req,res,next) => {
             }
             await nextStep(item._id);
         }
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
         res.status(StatusCodes.CREATED).send({message:ReasonPhrases.CREATED, alert:alertMaterial, data:responseOrder});
 
     } catch (error){
@@ -167,7 +172,8 @@ const addOrderExternal = async (req,res,next) => {
             await orderDetailsModel.deleteMany({idOrder : responseOrder._id});
         }
         console.log(error)
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
         res.status(StatusCodes.NOT_IMPLEMENTED).send({message: ReasonPhrases.NOT_IMPLEMENTED});
     }
 }
@@ -218,10 +224,12 @@ const getOrderExternalById = async (req,res,next) => {
     ])
     
     if(response!==null){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(response));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 }

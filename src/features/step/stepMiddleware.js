@@ -21,10 +21,12 @@ const getStepsByJobsId = async (req,res,next) => {
 
     const response = await stepModel.find({idOrderDetail:req._id});
     if(response!==null){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(response));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 }
@@ -34,10 +36,12 @@ const addStepByJobsId = async (req, res ,next) => {
 
     try {
         await nextStep(req._id);
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
         res.status(StatusCodes.OK).send({message: ReasonPhrases.OK});
     } catch (error) {
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
         res.status(StatusCodes.NOT_IMPLEMENTED).send({message: ReasonPhrases.NOT_IMPLEMENTED});
     }
 }
@@ -127,10 +131,12 @@ const addDelay = async(req,res,next)=> {
         await stepModel.updateOne({_id:stepsDetail[0]._id},{finishedAt: new Date()});
         step.type = "delayed";
         await stepModel.create(step);
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.CREATED});
         res.status(StatusCodes.CREATED).send({message: ReasonPhrases.CREATED});
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
         res.status(StatusCodes.NOT_IMPLEMENTED).send({message: ReasonPhrases.NOT_IMPLEMENTED});
     }
     

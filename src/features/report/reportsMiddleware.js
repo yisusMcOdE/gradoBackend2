@@ -43,6 +43,7 @@ const getAreaReport = async (req,res,next) => {
                 _id: '$_id',
                 idOrder: { $first: '$idOrder' },
                 status: { $first: '$status' },
+                equipment : { $first: '$equipment' },
                 job: { $first: '$job' },
                 detail: { $first: '$detail' },
                 requiredQuantity: { $first: '$requiredQuantity' },
@@ -65,6 +66,16 @@ const getAreaReport = async (req,res,next) => {
             }
         }
     ])
+
+    console.log(orders);
+    console.log(req.query.equipment);
+
+    if(req.area==='Impresion Digital')
+        if(req.query.equipment !== 'Tod' ){
+            orders = orders.filter(item => {
+                return item.equipment === req.query.equipment
+            })
+        }
 
     if(req.query.start!=='' && req.query.end!=='')
     {
@@ -96,6 +107,7 @@ const getAreaReport = async (req,res,next) => {
         const detalle = item.detail;
         const recurso = item.resource;
         const cantidad = item.requiredQuantity;
+        const equipment = item.equipment;
         const precio = item.cost;
         return {
             _id,
@@ -104,15 +116,18 @@ const getAreaReport = async (req,res,next) => {
             cliente,
             detalle,
             recurso,
+            equipment,
             cantidad,
             precio
         }
     })
     if(report.length!==0){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(report));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 }
@@ -125,7 +140,7 @@ const getOrdersTotalFinished = async (req, res, next) => {
         {
             $match: {
                 statusDelivered: true,
-                payStatus: true,
+                numberCheck: {$ne:0},
                 status: true
             }
         },
@@ -157,7 +172,6 @@ const getOrdersTotalFinished = async (req, res, next) => {
         {
             $match: {
                 statusDelivered: true,
-                confirmed:true,
                 status:true
             }
         },
@@ -207,10 +221,12 @@ const getOrdersTotalFinished = async (req, res, next) => {
     });
 
     if(finishReport.length!==0){
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
         res.status(StatusCodes.OK).send(JSON.stringify(finishReport));
     }else{
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NO_CONTENT});
         res.status(StatusCodes.NO_CONTENT).send({message: ReasonPhrases.NO_CONTENT});
     }
 }

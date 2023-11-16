@@ -21,7 +21,6 @@ materialSchema.post('findOneAndUpdate',async(doc)=>{
             }
         );
         const total = Number(response[0].available + response[0].reserved + response[0].used).toFixed(2);
-    
         await materialModel.updateOne({_id:doc._id},{total:total});   
     } catch (error) {
         console.log(error)

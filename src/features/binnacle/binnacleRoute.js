@@ -1,6 +1,6 @@
 const express = require ('express');
 const { getEquipmentById } = require('../equipment/equipmentMiddleware');
-const { getAllBinnacle } = require('./binnacleMiddleware');
+const { getAllBinnacle, getConfigBinnacle, updateConfigBinnacle } = require('./binnacleMiddleware');
 const { mongoose } = require ('../../database/connection.js');
 
 
@@ -12,6 +12,9 @@ binnacleRoute.param('id', (req,res,next,value) => {
 })
 
 binnacleRoute.get('', getAllBinnacle);
+binnacleRoute.get('/config', getConfigBinnacle);
 binnacleRoute.get('/:id', getEquipmentById);
+binnacleRoute.put('', updateConfigBinnacle);
+
 
 module.exports = {binnacleRoute}

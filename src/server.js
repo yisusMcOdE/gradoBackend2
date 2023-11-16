@@ -25,6 +25,7 @@ const {whatsappRoute} = require('./features/whatsapp/whatsappRoute.js');
 const { Client } = require('whatsapp-web.js');
 const { emailRoute } = require('./features/email/emailRoute.js');
 const { configServer, configServerModel } = require('./config/configServer.js');
+const { chargesRoute } = require('./features/charges/chargesRoute.js');
 
 const app = express();
 
@@ -78,6 +79,7 @@ configServer().then(()=>{
     app.use('/api/reports', reportRoute);
     app.use('/api/whatsapp', whatsappRoute);
     app.use('/api/email', emailRoute);
+    app.use('/api/charges', chargesRoute);
     
     app.get('/pdf', generatePdf);
     

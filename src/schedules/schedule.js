@@ -308,7 +308,8 @@ const generateSchedule = async(req, res, next) => {
         Todos : cronogramaTodos
     });
     
-    await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
+    if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.OK});
     res.status(StatusCodes.OK).send(jsonresponse);
 }
 
@@ -323,11 +324,13 @@ const updateSchedule = async (req, res, next) => {
             await orderDetailsModel.findOneAndUpdate({_id:_id}, {seconds:item.seconds});
         })
         Promise.all(promises).then(async()=>{
+            if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.Ok});
             res.status(StatusCodes.OK).send({message: ReasonPhrases.OK});
         })
     } catch (error) {
-        await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
+        if(req.binnacleId!==-1)
+            await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
         res.status(StatusCodes.NOT_IMPLEMENTED).send({message: ReasonPhrases.NOT_IMPLEMENTED});
     }
 

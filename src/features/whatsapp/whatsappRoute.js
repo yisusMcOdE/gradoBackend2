@@ -3,8 +3,8 @@ const { Client, NoAuth, LocalAuth } = require('whatsapp-web.js');
 const { configServerModel } = require('../../config/configServer');
 
 try {
-    let isWhatsappAuthenticated = false;
-    let maxQrError = false;
+    var isWhatsappAuthenticated = false;
+    var maxQrError = false;
 
     var myClient = new Client({
         authStrategy: new NoAuth(),
