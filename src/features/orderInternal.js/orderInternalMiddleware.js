@@ -179,7 +179,14 @@ const addOrderInternal = async (req,res,next) => {
         }
 
         /// Obteniendo id de cliente por nombre de institucion
+
+        if(req.body.idUser){
+            const {institution} = await clientInternalModel.findOne({idUser:req.body.idUser})
+            req.body.client = institution;
+        }
+
         const idClient = await clientInternalModel.findOne({institution:req.body.client},'_id');
+
         if(idClient===null)
             throw new Error('Id de cliente no encontrado');
         req.body.idClient = idClient._id;
@@ -255,6 +262,7 @@ const addOrderInternal = async (req,res,next) => {
         res.status(StatusCodes.CREATED).send({message:ReasonPhrases.CREATED, alert:alertMaterial});
 
     } catch (error) {
+        console.log(error);
         if(responseOrder){
             await orderInternalModel.deleteOne({_id : responseOrder._id});
             await orderDetailsModel.deleteMany({idOrder : responseOrder._id});
