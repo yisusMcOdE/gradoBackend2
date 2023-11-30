@@ -7,6 +7,7 @@ const schema = {
     fundsOrigin : {type : String, required : true},
     status: {type: Boolean, default:true},
     statusDelivered : {type: Boolean, default:false},
+    numberMinute: { type : Number, unique : true },
 }
 
 const orderInternalSchema = new mongoose.Schema(schema,{timestamps:true, versionKey:false});

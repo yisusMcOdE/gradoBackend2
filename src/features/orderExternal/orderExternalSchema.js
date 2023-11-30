@@ -1,3 +1,4 @@
+const { configServer, configServerModel } = require('../../config/configServer.js');
 const { mongoose } = require ('../../database/connection.js');
 
 const counterSchema = new mongoose.Schema({
@@ -6,18 +7,11 @@ const counterSchema = new mongoose.Schema({
 const counterModel = mongoose.model('counter', counterSchema);
 
 const getNextSequenceValue = async () => {
-    const counter = await counterModel.findOneAndUpdate(
+    const {ticketPayCount} = await configServerModel.findOneAndUpdate(
         {},
-        { $inc: { sequenceValue: 1 } },
-        { new: true, upsert: true }
+        { $inc: { ticketPayCount: 1 } },
     );
-    if(counter===null){
-        const newDocument = new counterModel({sequenceValue:1});
-        await newDocument.save();
-        return 1
-    }else{
-        return counter.sequenceValue;
-    }
+    return ticketPayCount
   }
 
 const schema = {
@@ -29,7 +23,7 @@ const schema = {
     statusDelivered : {type: Boolean, default:false},
     numberCheck : {type: Number, default: 0},
     numberTicketPay: { type : Number, unique : true },
-
+    numberMinute: { type : Number, unique : true },
 }
 
 const orderExternalSchema = new mongoose.Schema(schema,{timestamps:true, versionKey:false});

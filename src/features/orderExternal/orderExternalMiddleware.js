@@ -167,11 +167,11 @@ const addOrderExternal = async (req,res,next) => {
         res.status(StatusCodes.CREATED).send({message:ReasonPhrases.CREATED, alert:alertMaterial, data:responseOrder});
 
     } catch (error){
+        console.log(error)
         if(responseOrder){
             await orderExternalModel.deleteOne({_id : responseOrder._id});
             await orderDetailsModel.deleteMany({idOrder : responseOrder._id});
         }
-        console.log(error)
         if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_IMPLEMENTED});
         res.status(StatusCodes.NOT_IMPLEMENTED).send({message: ReasonPhrases.NOT_IMPLEMENTED});

@@ -12,6 +12,7 @@ const { orderExternalModel } = require("../orderExternal/orderExternalSchema");
 const { orderInternalModel } = require("../orderInternal.js/orderInternalSchema");
 const { nextStep } = require("../step/stepMiddleware");
 const { sendMessage } = require("../whatsapp/whatsappRoute");
+const { configServerModel } = require('../../config/configServer');
 
 const getAllOdersList = async (req,res,next) => {
     req.binnacleId = await addBinnacle(req);
@@ -714,25 +715,33 @@ const finishTotalOrderById = async(req, res, next) => {
     req.binnacleId = await addBinnacle(req);
 
     try {
-        const finishDate = new Date()
-        let order = await orderExternalModel.findOneAndUpdate({_id : req._id},{statusDelivered : true, dateDelivered:finishDate});
+        const finishDate = new Date();
+        const {minutesCount} =  await configServerModel.findOne({});
+        let order = await orderExternalModel.findOneAndUpdate({_id : req._id},{statusDelivered : true, dateDelivered:finishDate, numberMinute: minutesCount},{new:true});
         if(!order)
-            order = await orderInternalModel.findOneAndUpdate({_id : req._id},{statusDelivered : true, dateDelivered:finishDate});
+            order = await orderInternalModel.findOneAndUpdate({_id : req._id},{statusDelivered : true, dateDelivered:finishDate, numberMinute: minutesCount},{new:true});
         
         if(order){
+            console.log('aumenta minutes')
+            await configServerModel.findOneAndUpdate(
+                {},
+                { $inc: { minutesCount: 1 } },
+            );
             const updates = {
                 statusDelivered: order.statusDelivered,
                 dateDelivered: order.dateDelivered || ''
             }
             if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.ACCEPTED, oldValues: JSON.stringify(updates)});
-            res.status(StatusCodes.ACCEPTED).send({message:ReasonPhrases.ACCEPTED});
+            console.log(order);
+            res.status(StatusCodes.ACCEPTED).send(JSON.stringify(order));
         }else{
             if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_FOUND});
             res.status(StatusCodes.NOT_FOUND).send({message: ReasonPhrases.NOT_FOUND});
         }
     } catch (error) {
+        console.log(error);
         if(req.binnacleId!==-1)
             await binnacleModel.findOneAndUpdate({_id:req.binnacleId},{successful:ReasonPhrases.NOT_MODIFIED});
         res.status(StatusCodes.NOT_MODIFIED).send({message: ReasonPhrases.NOT_MODIFIED});

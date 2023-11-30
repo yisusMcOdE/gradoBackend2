@@ -20,7 +20,10 @@ const schemaConfig = new mongoose.Schema({
 
     registerGet : {type: Boolean, default:false},
     registerPost : {type: Boolean, default:true},
-    registerPut : {type: Boolean, default:true}
+    registerPut : {type: Boolean, default:true},
+
+    minutesCount : {type: Number, default: 1},
+    ticketPayCount : {type: Number, default: 1},
 }, {timestamps:true, versionKey:false});
 
 schemaConfig.pre('save', async(next)=>{
